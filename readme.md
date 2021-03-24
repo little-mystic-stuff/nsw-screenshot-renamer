@@ -105,6 +105,7 @@ home/user/sortedScreenshots/
 ```
 
 ### Roadmap
-- Windows compability (it's tested on Linux only yet)
+- ~~Windows compability (it's tested on Linux only yet)~~ Done
+- progress visualization
 - base updating mechanism
 - GUI
