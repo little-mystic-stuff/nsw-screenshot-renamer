@@ -75,7 +75,14 @@ if (args.mode !== 'fix-names') {
     if (args.mode === 'copy') {
       fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
     } else if (args.mode === 'move') {
-      fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
+      try {
+        fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
+      } catch (error){
+        if (error.code === 'EXDEV') {
+          fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
+          fs.unlinkSync(file);
+        }
+      }
     }
   });
   if (args.mode === 'move') {
