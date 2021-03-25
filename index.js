@@ -1,12 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const commander = require('commander');
-const program = new commander.Command();
+const Bar = require(`${__dirname}/lib/progress-bar.js`);
 const rename = require(`${__dirname}/lib/renamer.js`);
-
 const gameIds = require(`${__dirname}/game-ids.json`);
 
-
+const program = new commander.Command();
 program
   .addOption(new commander.Option('--mode <mode>', 'move/copy files or fix directory names')
     .choices(['copy', 'move', 'fix-names'])
@@ -20,11 +19,34 @@ program
     .default('original', 'original game title'))
   .addOption(new commander.Option('--file-format <format>', 'format for files')
     .choices(['original', 'remove-id'])
-    .default('remove-id', 'remove game id from original switch filename'));
-program.version('1.0.0', '-v, --version', 'current version of program');
+    .default('remove-id', 'remove game id from original switch filename'))
+  .addOption(new commander.Option('--work-mode <value>')
+    .choices(['cmd', 'gui'])
+    .default('cmd')
+    .hideHelp());
+program.version('1.1.0', '-v, --version', 'current version of program');
 program.parse();
 const args = program.opts();
 
+function print(text) {
+  if(args.workMode === 'cmd') {
+    process.stdout.write(`${text}\n`);
+  }
+}
+
+function getFilesStat(files) {
+  let jpg = 0;
+  let mp4 = 0;
+  files.forEach((file) => {
+    const format = path.basename(file).split('.')[1];
+    if (format === 'jpg') {
+      jpg++;
+    } else if (format === 'mp4') {
+      mp4++;
+    }
+  });
+  return {jpg, mp4};
+}
 
 function mkdirIfNotExistsSync(path) {
   if (!fs.existsSync(path)) {
@@ -57,7 +79,11 @@ function getFiles(dirPath) {
 
 if (args.mode !== 'fix-names') {
   const files = getFiles(args.input);
-  files.forEach((file) => {
+  const stat = getFilesStat(files);
+  print(`${files.length} files found: ${stat.jpg} images, ${stat.mp4} videos`);
+  const bar = new Bar(files.length);
+  let counter = 0;
+  files.forEach((file, i) => {
     const filename = path.basename(file);
     const format = filename.split('.')[1];
     const title = getGameTitle(filename);
@@ -74,6 +100,7 @@ if (args.mode !== 'fix-names') {
     const newFilename = rename.file(filename, args.fileFormat);
     if (args.mode === 'copy') {
       fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
+      bar.update(i);
     } else if (args.mode === 'move') {
       try {
         fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
@@ -83,6 +110,7 @@ if (args.mode !== 'fix-names') {
           fs.unlinkSync(file);
         }
       }
+      bar.update(i);
     }
   });
   if (args.mode === 'move') {
