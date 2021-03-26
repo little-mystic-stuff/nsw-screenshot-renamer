@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const commander = require('commander');
 const Bar = require(`${__dirname}/lib/progress-bar.js`);
 const rename = require(`${__dirname}/lib/renamer.js`);
@@ -7,8 +8,8 @@ const gameIds = require(`${__dirname}/game-ids.json`);
 
 const program = new commander.Command();
 program
-  .addOption(new commander.Option('--mode <mode>', 'move/copy files or fix directory names')
-    .choices(['copy', 'move', 'fix-names'])
+  .addOption(new commander.Option('--mode <mode>', 'move/copy files, fix directory names or update game base')
+    .choices(['copy', 'move', 'fix-names', 'update'])
     .default('copy', 'copy files'))
   .addOption(new commander.Option('--input <path>', 'path to Screenshots folder')
     .default('./', 'current directory'))
@@ -24,7 +25,7 @@ program
     .choices(['cmd', 'gui'])
     .default('cmd')
     .hideHelp());
-program.version('1.1.0', '-v, --version', 'current version of program');
+program.version('1.2.0', '-v, --version', 'current version of program');
 program.parse();
 const args = program.opts();
 
@@ -77,7 +78,7 @@ function getFiles(dirPath) {
   return files;
 }
 
-if (args.mode !== 'fix-names') {
+if (args.mode === 'copy' || args.mode === 'move') {
   const files = getFiles(args.input);
   const stat = getFilesStat(files);
   print(`${files.length} files found: ${stat.jpg} images, ${stat.mp4} videos`);
@@ -104,7 +105,7 @@ if (args.mode !== 'fix-names') {
     } else if (args.mode === 'move') {
       try {
         fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
-      } catch (error){
+      } catch (error) {
         if (error.code === 'EXDEV') {
           fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
           fs.unlinkSync(file);
@@ -116,7 +117,7 @@ if (args.mode !== 'fix-names') {
   if (args.mode === 'move') {
     fs.rmdirSync(args.input, {recursive: true});
   }
-} else {
+} else if (args.mode === 'fix-names') {
   const dirs = fs.readdirSync(path.resolve(args.input));
   dirs.forEach((dir) => {
     const currentPath = path.resolve(`${args.input}/${dir}`);
@@ -127,5 +128,28 @@ if (args.mode !== 'fix-names') {
         console.log(`renamed: "${dir}" to "${newName}"`);
       }
     }
+  });
+} else if (args.mode === 'update') {
+  const url = 'https://raw.githubusercontent.com/little-mystic-stuff/nsw-screenshot-renamer/master/game-ids.json';
+  https.get(url, (res) => {
+    print(`Requesting to ${url}`);
+    const { statusCode } = res;
+    if (statusCode !== 200) {
+      print(`Something goes wrong. Status code: ${statusCode}`);
+      return;
+    };
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      try {
+        fs.writeFileSync(path.resolve(`${__dirname}/game-ids.json`), rawData);
+        print('Game base succesfully updated.');
+      } catch (error) {
+        print('Something goes wrong.\n', error);
+      }
+    });
+  }).on('error', (error) => {
+    print(`Got error: ${error.message}`);
   });
 }

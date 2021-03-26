@@ -7,7 +7,10 @@ Also it can rename directories with sorted screenshots to game title (after base
 
 ### Preparation
 Tool requires installed NodeJS.
+
 Installation: ```npm i```.
+
+Update game title base: ```node index --mode=update```
 
 ### Program's arguments
 ```-h``` - show program info, run it before use to watch possible arguments values
@@ -107,5 +110,5 @@ home/user/sortedScreenshots/
 ### Roadmap
 - ~~Windows compability (it's tested on Linux only yet)~~ Done
 - ~~progress visualization~~ Done
-- base updating mechanism
+- ~~base updating mechanism~~ Done
 - GUI
