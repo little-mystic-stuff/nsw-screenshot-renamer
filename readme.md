@@ -1,6 +1,8 @@
 ### Nintendo Switch screenshot renamer
 Renaming and organizing tool.
 
+It works with files from SD-card. It doesn't work with console pluged-in to computer.
+
 ### How it works
 Tool reads directory with switch screenshots and copies/moves files to directories named as game titles. If there is no actual title in the base, title will be equal to game id taken from screenshot name.
 Also it can rename directories with sorted screenshots to game title (after base update).
@@ -112,3 +114,4 @@ home/user/sortedScreenshots/
 - ~~progress visualization~~ Done
 - ~~base updating mechanism~~ Done
 - GUI
+- working with console pluged-in to PC (maybe... I don't know...)
