@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const commander = require('commander');
 const Bar = require(`${__dirname}/lib/progress-bar.js`);
 const rename = require(`${__dirname}/lib/renamer.js`);
-const gameIds = require(`${__dirname}/game-ids.json`);
+const update = require(`${__dirname}/lib/updater.js`);
+const org = require(`${__dirname}/lib/organizer.js`)
+const print = require(`${__dirname}/lib/logger.js`);
 
 const program = new commander.Command();
 program
@@ -25,84 +26,35 @@ program
     .choices(['cmd', 'gui'])
     .default('cmd')
     .hideHelp());
-program.version('1.2.0', '-v, --version', 'current version of program');
+program.version('1.2.1', '-v, --version', 'current version of program');
 program.parse();
-const args = program.opts();
+global.args = program.opts();
 
-function print(text) {
-  if(args.workMode === 'cmd') {
-    process.stdout.write(`${text}\n`);
-  }
-}
-
-function getFilesStat(files) {
-  let jpg = 0;
-  let mp4 = 0;
-  files.forEach((file) => {
-    const format = path.basename(file).split('.')[1];
-    if (format === 'jpg') {
-      jpg++;
-    } else if (format === 'mp4') {
-      mp4++;
-    }
-  });
-  return {jpg, mp4};
-}
-
-function mkdirIfNotExistsSync(path) {
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path);
-  }
-}
-
-function getGameTitle(filename) {
-  const id = /[0-9A-Z]{32}/.exec(filename);
-  if (id !== null) {
-    return gameIds[id] === undefined ? id[0] : gameIds[id];
-  }
-}
-
-function getFiles(dirPath) {
-  const files = [];
-  const readDir = (dirPath) => {
-    fs.readdirSync(dirPath).forEach(item => {
-      const currentItem = path.join(dirPath, item);
-      if (fs.statSync(currentItem).isDirectory()) {
-        readDir(currentItem);
-      } else {
-        files.push(currentItem);
-      }
-    });
-  }
-  readDir(dirPath);
-  return files;
-}
-
-if (args.mode === 'copy' || args.mode === 'move') {
-  const files = getFiles(args.input);
-  const stat = getFilesStat(files);
+if (global.args.mode === 'copy' || global.args.mode === 'move') {
+  const files = org.getFiles(global.args.input);
+  const stat = org.getFilesStat(files);
   print(`${files.length} files found: ${stat.jpg} images, ${stat.mp4} videos`);
   const bar = new Bar(files.length);
   let counter = 0;
   files.forEach((file, i) => {
     const filename = path.basename(file);
     const format = filename.split('.')[1];
-    const title = getGameTitle(filename);
-    const newTitle = rename.directory(title, args.directoryFormat);
-    let workPath = path.resolve(`${args.output}/${newTitle}`);
-    mkdirIfNotExistsSync(workPath);
+    const title = org.getGameTitle(filename);
+    const newTitle = rename.directory(title, global.args.directoryFormat);
+    let workPath = path.resolve(`${global.args.output}/${newTitle}`);
+    org.mkdirIfNotExistsSync(workPath);
     if (format.indexOf('jpg') === 0) {
-      mkdirIfNotExistsSync(`${workPath}/images`);
+      org.mkdirIfNotExistsSync(`${workPath}/images`);
       workPath = path.resolve(`${workPath}/images`);
     } else if (format.indexOf('mp4') === 0) {
-      mkdirIfNotExistsSync(`${workPath}/videos`);
+      org.mkdirIfNotExistsSync(`${workPath}/videos`);
       workPath = path.resolve(`${workPath}/videos`);
     }
-    const newFilename = rename.file(filename, args.fileFormat);
-    if (args.mode === 'copy') {
+    const newFilename = rename.file(filename, global.args.fileFormat);
+    if (global.args.mode === 'copy') {
       fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
       bar.update(i);
-    } else if (args.mode === 'move') {
+    } else if (global.args.mode === 'move') {
       try {
         fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
       } catch (error) {
@@ -114,42 +66,21 @@ if (args.mode === 'copy' || args.mode === 'move') {
       bar.update(i);
     }
   });
-  if (args.mode === 'move') {
-    fs.rmdirSync(args.input, {recursive: true});
+  if (global.args.mode === 'move') {
+    fs.rmdirSync(global.args.input, {recursive: true});
   }
-} else if (args.mode === 'fix-names') {
-  const dirs = fs.readdirSync(path.resolve(args.input));
+} else if (global.args.mode === 'fix-names') {
+  const dirs = fs.readdirSync(path.resolve(global.args.input));
   dirs.forEach((dir) => {
-    const currentPath = path.resolve(`${args.input}/${dir}`);
+    const currentPath = path.resolve(`${global.args.input}/${dir}`);
     if (/[0-9A-Z]{32}/.test(dir)) {
-      const newName = rename.directory(getGameTitle(dir), args.directoryFormat);
+      const newName = rename.directory(getGameTitle(dir), global.args.directoryFormat);
       if (dir !== newName) {
         fs.renameSync(currentPath, currentPath.replace(dir, newName));
         console.log(`renamed: "${dir}" to "${newName}"`);
       }
     }
   });
-} else if (args.mode === 'update') {
-  const url = 'https://raw.githubusercontent.com/little-mystic-stuff/nsw-screenshot-renamer/master/game-ids.json';
-  https.get(url, (res) => {
-    print(`Requesting to ${url}`);
-    const { statusCode } = res;
-    if (statusCode !== 200) {
-      print(`Something goes wrong. Status code: ${statusCode}`);
-      return;
-    };
-    res.setEncoding('utf8');
-    let rawData = '';
-    res.on('data', (chunk) => { rawData += chunk; });
-    res.on('end', () => {
-      try {
-        fs.writeFileSync(path.resolve(`${__dirname}/game-ids.json`), rawData);
-        print('Game base succesfully updated.');
-      } catch (error) {
-        print('Something goes wrong.\n', error);
-      }
-    });
-  }).on('error', (error) => {
-    print(`Got error: ${error.message}`);
-  });
+} else if (global.args.mode === 'update') {
+  update();
 }
