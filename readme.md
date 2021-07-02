@@ -12,7 +12,7 @@ Tool requires installed NodeJS.
 
 Installation: ```npm i```.
 
-Update game title base: ```node index --mode=update```
+Update game title base: ```node cmd --mode=update```
 
 ### Program's arguments
 ```-h``` - show program info, run it before use to watch possible arguments values
@@ -28,7 +28,7 @@ Update game title base: ```node index --mode=update```
 ```--file-format=<format>``` - format of filename
 
 ### Examples
-Command: ```node index --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots```
+Command: ```node cmd --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots```
 
 Result: screenshots copied to sortedScreenshots-directory like this:
 ```
@@ -49,7 +49,7 @@ home/user/sortedScreenshots/
         └── 2019042602240100.jpg
 ```
 
-Command: ```node index --mode=move --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots --directory-format=dash-case --file-format=original```
+Command: ```node cmd --mode=move --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots --directory-format=dash-case --file-format=original```
 
 Result: screenshots moved to sortedScreenshots-directory like this:
 ```
@@ -70,7 +70,7 @@ home/user/sortedScreenshots/
         └── 2019042602240100-7AEA3B76283DF2B97E581259A12F733D.jpg
 ```
 
-Command: ```node index --mode=fix-names --input=/home/user/sortedScreenshots```
+Command: ```node cmd --mode=fix-names --input=/home/user/sortedScreenshots```
 
 Before (there is no title for game id 7AEA3B76283DF2B97E581259A12F733D):
 ```
