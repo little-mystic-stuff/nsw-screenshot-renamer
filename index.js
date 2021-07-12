@@ -16,7 +16,8 @@ function createWindow () {
       sandbox: false
     }
   })
-  win.loadFile('index.html')
+  win.setMenu(null);
+  win.loadFile('index.html');
   return win;
 }
 
