@@ -7,7 +7,7 @@ It works with files from SD-card. It doesn't work with console pluged-in to comp
 Tool reads directory with switch screenshots and copies/moves files to directories named as game titles. If there is no actual title in the base, title will be equal to game id taken from screenshot name.
 Also it can rename directories with sorted screenshots to game title (after base update).
 
-###Using GUI
+### Using GUI
 
 - Go to [release page](https://github.com/little-mystic-stuff/nsw-screenshot-renamer/releases/tag/v2.0.3) and download nesessary version.
 - Update game base.
@@ -22,7 +22,7 @@ Also it can rename directories with sorted screenshots to game title (after base
 Some directories can be named as bunch of digits and letters. It means this game is not in game base yet. You can create a pull-request with update or open issue.
 Then, after base update you can fix this directory name via updating base in program and choosing "fix-names" mode with setting you media-storage as input directory.
 
-###Using command line tool
+### Using command line tool
 
 #### Preparation
 Tool requires installed NodeJS.
