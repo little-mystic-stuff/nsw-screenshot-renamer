@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Nintendo Switch screenshot renamer</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
+  </head>
+  <body>
+    <h3>Nintendo Switch organizing tool</h3>
+    <p id="description">Sort your screenshots and videos. You can find details and send your feedback <a href="https://github.com/little-mystic-stuff/nsw-screenshot-renamer#readme" target="_blank">here</a>.</p>
+    <button id="bt_update">Update game base</button>
+    <br>
+    <form id="form_mode">
+      <div>Mode:</div>
+      <label><input type="radio" name="mode" value="copy" checked> copy files</label>
+      <br>
+      <label><input type="radio" name="mode" value="move"> move files</label>
+      <br>
+      <label><input type="radio" name="mode" value="fix-names"> fix games' titles</label>
+    </form>
+    <button id="bt_input">Select input directory</button>
+    <input id="inp_input" disabled></input>
+    <br>
+    <div id="params_wrapper">
+      <form id="form_directory">
+        <div>Directory name format:</div>
+        <label><input type="radio" name="directoryFormat" value="original" checked> original game title</label>
+        <br>
+        <label><input type="radio" name="directoryFormat" value="nospaces"> nospaces</label>
+        <br>
+        <label><input type="radio" name="directoryFormat" value="snake_case"> snake_case</label>
+        <br>
+        <label><input type="radio" name="directoryFormat" value="dash-case"> dash-case</label>
+      </form>
+      <form id="form_filename">
+        <div>Filename format:</div>
+        <label><input type="radio" name="fileFormat" value="remove-id" checked> remove game id from title</label>
+        <br>
+        <label><input type="radio" name="fileFormat" value="original"> original filenames</label>
+      </form>
+    </div>
+    <button id="bt_output">Select output directory</button>
+    <input id="inp_output" disabled></input>
+    <br>
+    <button id="bt_proceed" disabled>Proceed files</button>
+    <div id="block_logger">
+      <hr>
+      <div id="logger_title">Log:</div>
+      <div id="txt_logger"></div>
+    </div>
+  </body>
+</html>

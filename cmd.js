@@ -39,10 +39,17 @@ if (global.args.mode === 'copy' || global.args.mode === 'move') {
   files.forEach((file, i) => {
     const filename = path.basename(file);
     const format = filename.split('.')[1];
-    const title = org.getGameTitle(filename);
-    const newTitle = rename.directory(title, global.args.directoryFormat);
+    let newTitle = rename.directory(title, global.args.directoryFormat);
     let workPath = path.resolve(`${global.args.output}/${newTitle}`);
-    org.mkdirIfNotExistsSync(workPath);
+    try {
+      org.mkdirIfNotExistsSync(workPath);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        newTitle = rename.directory(title, global.args.directoryFormat, true);
+        workPath = path.resolve(`${global.args.output}/${newTitle}`);
+        org.mkdirIfNotExistsSync(workPath);
+      }
+    }
     if (format.indexOf('jpg') === 0) {
       org.mkdirIfNotExistsSync(`${workPath}/images`);
       workPath = path.resolve(`${workPath}/images`);
@@ -74,10 +81,10 @@ if (global.args.mode === 'copy' || global.args.mode === 'move') {
   dirs.forEach((dir) => {
     const currentPath = path.resolve(`${global.args.input}/${dir}`);
     if (/[0-9A-Z]{32}/.test(dir)) {
-      const newName = rename.directory(getGameTitle(dir), global.args.directoryFormat);
+      const newName = rename.directory(org.getGameTitle(dir), global.args.directoryFormat);
       if (dir !== newName) {
         fs.renameSync(currentPath, currentPath.replace(dir, newName));
-        console.log(`renamed: "${dir}" to "${newName}"`);
+        print(`renamed: "${dir}" to "${newName}"`);
       }
     }
   });
