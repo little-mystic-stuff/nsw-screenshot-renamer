@@ -9,6 +9,7 @@ function createWindow () {
     width: 800,
     height: 600,
     resizable: false,
+    useContentSize: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegrationInWorker: true,
@@ -50,13 +51,6 @@ app.whenReady().then(() => {
     const path = selectDirectoryDialog(window, data);
     event.returnValue = path;
   });
-
-  ipcMain.on('pb_tick', (event, data) => {
-    const value = data.current / data.all;
-    window.setProgressBar(value);
-    window.setTitle = `${data.current}`;
-    event.returnValue = null;
-  })
 
   window.webContents.on('new-window', function(e, url) {
   e.preventDefault();

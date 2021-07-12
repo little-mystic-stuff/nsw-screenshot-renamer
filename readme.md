@@ -3,18 +3,35 @@ Renaming and organizing tool.
 
 It works with files from SD-card. It doesn't work with console pluged-in to computer.
 
-### How it works
+#### How it works
 Tool reads directory with switch screenshots and copies/moves files to directories named as game titles. If there is no actual title in the base, title will be equal to game id taken from screenshot name.
 Also it can rename directories with sorted screenshots to game title (after base update).
 
-### Preparation
+###Using GUI
+
+- Go to [release page]() and download nesessary version.
+- Update game base.
+- Select "copy" or "move" mode to sort screenshots and videos.
+- Select screenshot source directory.
+- Select format for new directories and files (defaults are pretty nice).
+- Select target directory for sorted media.
+- Press "proceed" button.
+- ...
+- Profit.
+
+Some directories can be named as bunch of digits and letters. It means this game is not in game base yet. You can create a pull-request with update or open issue.
+Then, after base update you can fix this directory name via updating base in program and choosing "fix-names" mode with setting you media-storage as input directory.
+
+###Using command line tool
+
+#### Preparation
 Tool requires installed NodeJS.
 
 Installation: ```npm i```.
 
 Update game title base: ```node cmd --mode=update```
 
-### Program's arguments
+#### Program's arguments
 ```-h``` - show program info, run it before use to watch possible arguments values
 
 ```--mode=<mode>``` - рrogram mode: move files, copy files, fix(update) game titles
@@ -113,5 +130,7 @@ home/user/sortedScreenshots/
 - ~~Windows compability (it's tested on Linux only yet)~~ Done
 - ~~progress visualization~~ Done
 - ~~base updating mechanism~~ Done
-- GUI
+- ~~GUI~~ done
+- refactoring and UI-improvements
+- merging gui to master
 - working with console pluged-in to PC (maybe... I don't know...)
