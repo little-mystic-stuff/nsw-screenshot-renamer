@@ -1,7 +1,6 @@
 const update = require(`${__dirname}/lib/updater.js`);
 const org = require(`${__dirname}/lib/organizer.js`);
 const print = require(`${__dirname}/lib/logger.js`);
-const rename = require(`${__dirname}/lib/renamer.js`);
 const path = require('path');
 const fs = require('fs');
 const {ipcRenderer} = require('electron');
@@ -14,6 +13,8 @@ global.args.directoryFormat = 'original';
 global.args.fileFormat = 'remove-ids';
 global.args.workMode = 'gui';
 global.args.guiLog = null;
+
+let status = 'idle';
 
 function checkBase() {
   const base = localStorage.getItem('base');
@@ -43,11 +44,10 @@ function checkArgs() {
 }
 
 function setFinalButtonStatus (button) {
-  button.disabled = !checkArgs();
+  button.disabled = !checkArgs() || status === 'work';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
   const btUpdate = document.getElementById('bt_update');
   btUpdate.addEventListener('click', (e) => {
     update();
@@ -56,72 +56,21 @@ window.addEventListener('DOMContentLoaded', () => {
   const txtLogger = document.getElementById('txt_logger');
   global.args.guiLog = txtLogger;
 
+  const worker = new Worker(`${__dirname}/lib/worker.js`);
+  worker.onmessage = (e) => {
+    const text = e.data;
+    if (text === 'ok') {
+      status = 'idle';
+    } else {
+      print(text);
+    }
+  }
   const btProceed = document.getElementById('bt_proceed');
   btProceed.addEventListener('click', (e) => {
     btProceed.disabled = true;
-    if (global.args.mode === 'copy' || global.args.mode === 'move') {
-      const files = org.getFiles(global.args.input);
-      const all = files.length;
-      let counter = 0;
-      files.forEach((file, i) => {
-        const filename = path.basename(file);
-        const format = filename.split('.')[1];
-        const title = org.getGameTitle(filename);
-        let newTitle = rename.directory(title, global.args.directoryFormat);
-        let workPath = path.resolve(`${global.args.output}/${newTitle}`);
-        try {
-          org.mkdirIfNotExistsSync(workPath);
-        } catch (error) {
-          if (error.code === 'ENOENT') {
-            newTitle = rename.directory(title, global.args.directoryFormat, true);
-            workPath = path.resolve(`${global.args.output}/${newTitle}`);
-            org.mkdirIfNotExistsSync(workPath);
-          }
-        }
-
-        if (format.indexOf('jpg') === 0) {
-          org.mkdirIfNotExistsSync(`${workPath}/images`);
-          workPath = path.resolve(`${workPath}/images`);
-        } else if (format.indexOf('mp4') === 0) {
-          org.mkdirIfNotExistsSync(`${workPath}/videos`);
-          workPath = path.resolve(`${workPath}/videos`);
-        }
-        const newFilename = rename.file(filename, global.args.fileFormat);
-        if (global.args.mode === 'copy') {
-          fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
-          counter++;
-          const kek = ipcRenderer.sendSync('pb_tick', {current: counter, all: all});
-        } else if (global.args.mode === 'move') {
-          try {
-            fs.renameSync(file, path.resolve(`${workPath}/${newFilename}`));
-            counter++;
-            print(`File "${filename}" moved to "${newTitle}" directory. ${counter}\\${all}`);
-          } catch (error) {
-            if (error.code === 'EXDEV') {
-              fs.copyFileSync(file, path.resolve(`${workPath}/${newFilename}`));
-              fs.unlinkSync(file);
-              counter++;
-              print(`File "${filename}" moved to "${newTitle}" directory. ${counter}\\${all}`);
-            }
-          }
-        }
-      });
-      if (global.args.mode === 'move') {
-        fs.rmdirSync(global.args.input, {recursive: true});
-      }
-    } else if (global.args.mode === 'fix-names') {
-      const dirs = fs.readdirSync(path.resolve(global.args.input));
-      dirs.forEach((dir) => {
-        const currentPath = path.resolve(`${global.args.input}/${dir}`);
-        if (/[0-9A-Z]{32}/.test(dir)) {
-          const newName = rename.directory(org.getGameTitle(dir), global.args.directoryFormat);
-          if (dir !== newName) {
-            fs.renameSync(currentPath, currentPath.replace(dir, newName));
-            print(`renamed: "${dir}" to "${newName}"`);
-          }
-        }
-      });
-    }
+    status = 'work';
+    print('Working...')
+    worker.postMessage(JSON.parse(JSON.stringify(global.args)));
   });
 
   const inpInput = document.getElementById("inp_input");

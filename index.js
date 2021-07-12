@@ -10,7 +10,9 @@ function createWindow () {
     height: 600,
     resizable: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegrationInWorker: true,
+      sandbox: false
     }
   })
   win.loadFile('index.html')
