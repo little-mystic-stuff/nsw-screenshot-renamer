@@ -9,7 +9,7 @@ Also it can rename directories with sorted screenshots to game title (after base
 
 ###Using GUI
 
-- Go to [release page]() and download nesessary version.
+- Go to [release page](https://github.com/little-mystic-stuff/nsw-screenshot-renamer/releases/tag/v2.0.3) and download nesessary version.
 - Update game base.
 - Select "copy" or "move" mode to sort screenshots and videos.
 - Select screenshot source directory.
