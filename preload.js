@@ -25,7 +25,7 @@ function checkBase() {
 
 function checkInputNintendoDirectory(path) {
   return path !== null && org.getFiles(path).every((elem) => {
-    return /\/20\d{2}[\/\\]\d{2}[\/\\]\d{2}[\/\\]\d{16}-[0-9A-Z]{32}\..{3}/.test(elem.replace(path, ''));
+    return /[\/\\]20\d{2}[\/\\]\d{2}[\/\\]\d{2}[\/\\]\d{16}-[0-9A-Z]{32}\..{3}/.test(elem.replace(path, ''));
   });
 }
 
