@@ -13,7 +13,7 @@
 
 #block_logger {
   position: absolute;
-  width: 800px;
+  display:contents;
   bottom: 0px;
 }
 

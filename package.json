@@ -1,10 +1,14 @@
 {
   "name": "nsw-screenshot-renamer",
   "version": "1.2.1",
-  "description": "lalala",
+  "description": "Siple tool for organizing nintendo switch screenshots",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build-l": "electron-builder build -l",
+    "build-w": "electron-builder build -w"
   },
   "author": "",
   "license": "Apache",
@@ -16,6 +20,22 @@
     "commander": "^7.2.0"
   },
   "devDependencies": {
-    "electron": "^12.0.2"
+    "electron": "^12.0.2",
+    "electron-builder": "^22.11.7"
+  },
+  "build": {
+    "appId": "com.i-love-pixel.nsw-screenshot-renamer",
+    "win": {
+      "target": ["portable"]
+    },
+    "linux": {
+      "target": "zip"
+    },
+    "portable": {
+      "artifactName": "nsw-screenshot-renamer.exe"
+    },
+    "directories": {
+      "output": "releases"
+    }
   }
 }
