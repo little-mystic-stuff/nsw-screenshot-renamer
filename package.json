@@ -1,6 +1,6 @@
 {
   "name": "nsw-screenshot-renamer",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Simple tool for organizing nintendo switch screenshots",
   "main": "index.js",
   "scripts": {
