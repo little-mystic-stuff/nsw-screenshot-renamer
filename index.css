@@ -58,6 +58,7 @@ h3 {
 
 button {
   margin-left: 10px;
+  cursor: pointer;
 }
 
 form {
@@ -76,8 +77,21 @@ form {
 
 label input {
  vertical-align: top;
+ cursor: pointer;
+}
+
+label {
+  cursor: pointer;
 }
 
 #bt_proceed {
   margin-top: 10px;
+}
+
+.unselectable {
+  -webkit-user-select: none;
+}
+
+.selectable {
+  -webkit-user-select: text;
 }
