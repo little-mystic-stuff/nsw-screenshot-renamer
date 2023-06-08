@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Nintendo Switch screenshot renamer</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <!--<link rel="stylesheet" type="text/css" href="./darkTheme.css">-->
+  </head>
+  <body class="unselectable">
+    <h3>Nintendo Switch organizing tool</h3>
+    <p id="description">Sort your screenshots and videos. You can find details and send your feedback <a href="https://github.com/little-mystic-stuff/nsw-screenshot-renamer#readme" target="_blank">here</a>.</p>
+    <button id="bt_update">Update game base</button>
+    <br>
+    <form id="form_mode">
+      <div>Mode:</div>
+      <label title="Copy files to new directory"><input type="radio" name="mode" value="copy" checked> copy files</label>
+      <br>
+      <label title="Move files to new directory"><input type="radio" name="mode" value="move"> move files</label>
+      <br>
+      <label title="Rename existing directories with sorted content"><input type="radio" name="mode" value="fix-names"> fix games' titles</label>
+    </form>
+    <button id="bt_input">Select input directory</button>
+    <input id="inp_input" disabled></input>
+    <br>
+    <div id="params_wrapper">
+      <form id="form_directory">
+        <div>Directory name format:</div>
+        <label title="Original names of games (except symbols prohibited in OS or filesystem)"><input type="radio" name="directoryFormat" value="original" checked> original game title</label>
+        <br>
+        <label title="Delete spaces"><input type="radio" name="directoryFormat" value="nospaces"> nospaces</label>
+        <br>
+        <label title="Replace spaces by underscores"><input type="radio" name="directoryFormat" value="snake_case"> snake_case</label>
+        <br>
+        <label title="Replace spaces by dashes"><input type="radio" name="directoryFormat" value="dash-case"> dash-case</label>
+      </form>
+      <form id="form_filename">
+        <div>Filename format:</div>
+        <label title="Remove game IDs from filenames"><input type="radio" name="fileFormat" value="remove-id" checked> remove game id from title</label>
+        <br>
+        <label title="Save original filename"><input type="radio" name="fileFormat" value="original"> original filenames</label>
+      </form>
+    </div>
+    <button id="bt_output">Select output directory</button>
+    <input id="inp_output" disabled></input>
+    <br>
+    <button id="bt_proceed" disabled>Proceed files</button>
+    <div id="block_logger">
+      <hr>
+      <div id="logger_title">Log:</div>
+      <div id="txt_logger" class="selectable"></div>
+    </div>
+  </body>
+</html>

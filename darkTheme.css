@@ -1,0 +1,22 @@
+body {
+  background-color: #1e1e1e;
+  color: #dedede;
+}
+
+button {
+  background-color: #1e1e1e;
+  color: #dedede;
+  border-color: #dedede;
+}
+
+#bt_proceed:disabled {
+  color: red;
+}
+
+#bt_proceed:enabled {
+  color: green;
+}
+
+input[type=radio]:checked {
+  background-color: red;
+}

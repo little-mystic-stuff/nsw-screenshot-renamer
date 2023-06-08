@@ -3,18 +3,35 @@ Renaming and organizing tool.
 
 It works with files from SD-card. It doesn't work with console pluged-in to computer.
 
-### How it works
+#### How it works
 Tool reads directory with switch screenshots and copies/moves files to directories named as game titles. If there is no actual title in the base, title will be equal to game id taken from screenshot name.
 Also it can rename directories with sorted screenshots to game title (after base update).
 
-### Preparation
+### Using GUI
+
+- Go to [release page](https://github.com/little-mystic-stuff/nsw-screenshot-renamer/releases/tag/v2.0.3) and download nesessary version.
+- Update game base.
+- Select "copy" or "move" mode to sort screenshots and videos.
+- Select screenshot source directory.
+- Select format for new directories and files (defaults are pretty nice).
+- Select target directory for sorted media.
+- Press "proceed" button.
+- ...
+- Profit.
+
+Some directories can be named as bunch of digits and letters. It means this game is not in game base yet. You can create a pull-request with update or open issue.
+Then, after base update you can fix this directory name via updating base in program and choosing "fix-names" mode with setting you media-storage as input directory.
+
+### Using command line tool
+
+#### Preparation
 Tool requires installed NodeJS.
 
 Installation: ```npm i```.
 
-Update game title base: ```node index --mode=update```
+Update game title base: ```node cmd --mode=update```
 
-### Program's arguments
+#### Program's arguments
 ```-h``` - show program info, run it before use to watch possible arguments values
 
 ```--mode=<mode>``` - рrogram mode: move files, copy files, fix(update) game titles
@@ -28,7 +45,7 @@ Update game title base: ```node index --mode=update```
 ```--file-format=<format>``` - format of filename
 
 ### Examples
-Command: ```node index --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots```
+Command: ```node cmd --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots```
 
 Result: screenshots copied to sortedScreenshots-directory like this:
 ```
@@ -49,7 +66,7 @@ home/user/sortedScreenshots/
         └── 2019042602240100.jpg
 ```
 
-Command: ```node index --mode=move --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots --directory-format=dash-case --file-format=original```
+Command: ```node cmd --mode=move --input=/home/user/Switch/Screenshots --output=/home/user/sortedScreenshots --directory-format=dash-case --file-format=original```
 
 Result: screenshots moved to sortedScreenshots-directory like this:
 ```
@@ -70,7 +87,7 @@ home/user/sortedScreenshots/
         └── 2019042602240100-7AEA3B76283DF2B97E581259A12F733D.jpg
 ```
 
-Command: ```node index --mode=fix-names --input=/home/user/sortedScreenshots```
+Command: ```node cmd --mode=fix-names --input=/home/user/sortedScreenshots```
 
 Before (there is no title for game id 7AEA3B76283DF2B97E581259A12F733D):
 ```
@@ -113,5 +130,7 @@ home/user/sortedScreenshots/
 - ~~Windows compability (it's tested on Linux only yet)~~ Done
 - ~~progress visualization~~ Done
 - ~~base updating mechanism~~ Done
-- GUI
+- ~~GUI~~ done
+- refactoring and UI-improvements
+- merging gui to master
 - working with console pluged-in to PC (maybe... I don't know...)
