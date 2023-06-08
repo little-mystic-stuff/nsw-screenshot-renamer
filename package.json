@@ -8,7 +8,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "build-l": "electron-builder build -l",
-    "build-w": "electron-builder build -w"
+    "build-w": "electron-builder build -w",
+    "build-m": "electron-builder build -m"
   },
   "author": "",
   "license": "Apache",
@@ -21,10 +22,11 @@
   },
   "devDependencies": {
     "electron": "^12.0.2",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^23.0.2"
   },
   "build": {
     "appId": "com.i-love-pixel.nsw-screenshot-renamer",
+    "productName": "NSW Screenshot Renamer",
     "win": {
       "target": ["portable"]
     },
